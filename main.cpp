@@ -104,7 +104,6 @@ class Node{
             this->elem_tab=newElemTab;
             // We return 1 in a success case
             return 1;
-
         } 
         int deleteElement(Element<K, T> e){
             int tmp=0; bool exists=false; int nb_E=0;
@@ -148,19 +147,20 @@ class Node{
 };
 /**************************************************************************/
 /************************* Index ********************/
-template<class K, class T> class Index{
+template<class K, class T> 
+class Index{
     private: 
         int nbElements; 
         Node<K, T>* nodes;
     public: 
         Index(){
             this->nbElements=0; 
-            this->nodes=malloc(sizeof(Node<K, T>)); 
+            this->nodes=(Node<K, T>*) malloc(sizeof(Node<K, T>)); 
         }
-        ~Index(){
+        /*~Index(){
             free(this->nodes);
             cout << "This Index doesn't have any node, that's why it's destroyed"<<endl;  
-        }
+        }*/
         Node<K,T> getNodeIndex(int i){
             return this->nodes[i]; 
         }
@@ -173,12 +173,22 @@ template<class K, class T> class Index{
             return -1; 
         }
         int addNode(K key){
-            // This part will be done at the end of the project 
+            Node<K,T> n = Node<K,T>(key); 
+            Node<K, T>* newNodeTab=(Node<K, T>*) malloc(sizeof(Node<K, T>)*(this->nbElements+1));
+            for(int i=0; i<this->nbElements; i++){
+                newNodeTab[i] = this->nodes[i];
+            }
+            newNodeTab[this->nbElements]=n;
+            this->nbElements++;
+            free(this->nodes);
+            this->nodes=newNodeTab;
+            // We return 1 in a success case
+            return 1;
         }
         int deleteNode(K key){
             int tmp=0; bool exists=false; int nb_E=0;
             // New tab having all the nodes except the node with 'key'
-            Node<K, T>* newNodeTab=(Element<K, T>*) malloc(sizeof(Node<K, T>)*(nbElements-1));
+            Node<K, T>* newNodeTab=(Node<K, T>*) malloc(sizeof(Node<K, T>)*(nbElements-1));
             if(this->nbElements==0){
                 cout << "The Index doesn't have any node to delete"<<endl;
                 return -1;
@@ -186,8 +196,8 @@ template<class K, class T> class Index{
             else{
                 // We search for the node with'key' in the Index
                 for(int i=0; i<this->nbElements; i++){
-                    if(this->elem_tab[i] != e){
-                        newElemTab[tmp]=this->nodes[i];
+                    if(this->nodes[i].getKey() != key){
+                        newNodeTab[tmp]=this->nodes[i];
                         tmp++;
                     }
                     else{
@@ -197,7 +207,7 @@ template<class K, class T> class Index{
                 if(exists){
                     this->nbElements--;
                     free(this->nodes);
-                    this->nodes=newElemTab;
+                    this->nodes=newNodeTab;
                     // We verify if the Index is empty, we delete it 
                     if(this->nbElements==0){
                         delete this; 
@@ -206,7 +216,7 @@ template<class K, class T> class Index{
                 return 1;
             } 
         }
-        Element* getElements(K key){
+        Element<K,T>* getElements(K key){
             if(this->getNode(key)!=-1){
                 return this->getNodeIndex((this->getNode(key))).getElements(key);  
             }
@@ -216,25 +226,53 @@ template<class K, class T> class Index{
             }
             
         }
-        int addElement(Element e){
-            
+        int addElement(Element<K,T> e){
+            for(int i=0; i<this->nbElements; i++){
+                if(e.getKey()==nodes[i].getKey()){
+                    this->nodes[i].addElement(e);
+                    return 1;  
+                }
+            }
+            // There is no node with a the element's key, we should create it 
+            this->addNode(e.getKey()); 
+            this->addElement(e);
+            return 2;
         }
-        int deleteElement(Element e){
+        int getNbNodes(){
+            return this->nbElements;
+        }
+        void printIndex(){
+            for(int i=0; i<this->nbElements; i++){
+                cout << "Node key: "<< nodes[i].getKey()<< endl; 
+                nodes[i].printNode();
+            }
+        }
+        //int deleteElement(Element<K,T> e){
 
-        }
+        //}
 };
 
 int main(){
-    Node<int, int> n = Node<int, int>(3);
-    Node<int, string> n2 = Node<int, string>(4);
-    Element<int, int> e = Element<int, int>(2,2);
-    Element<int, int> e2 = Element<int, int>(33,10);
-    Element<int, int> e3 = Element<int, int>(5,6);
-    n.addElement(e);
-    n.addElement(e2);
-    n.addElement(e3);
-    n.addElement(e3);
-    n.addElement(e3);
+    Index<int, int> i = Index<int, int>(); 
+    Node<int, int> n = Node<int, int>(12); 
+    Element<int, int> e = Element<int, int>(12, 33);
+    Element<int, int> eBis = Element<int, int>(12, 667);
+    Element<int, int> e1 = Element<int, int>(13, 33);
+    Element<int, int> e2 = Element<int, int>(13, 53);
+    Element<int, int> e3 = Element<int, int>(1, 53);
 
-    
+    Index<int, int> iS= Index<int, int>(); 
+    Element<int, int> eS = Element<int, int>(3, 12);
+    i.addNode(12);
+    i.addNode(13);
+    i.addElement(e);
+    i.addElement(e1);
+    i.addElement(e2);
+    i.addElement(e3);
+    i.addElement(eBis);
+    i.printIndex();
+
+    iS.addElement(eS);
+    iS.printIndex();
+    return 0; 
 }
