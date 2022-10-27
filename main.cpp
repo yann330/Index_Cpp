@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 using namespace std;
 /************************* Element ********************/
@@ -36,8 +37,8 @@ bool Element<K, V>::operator==(Element<K,V> e){
 
 template<class K, class V>
 void Element<K, V>::operator=(Element<K,V> e){
-    this->key=e.getKey(); 
-    this->value=e.getValue();
+    this->key=e.key; 
+    this->value=e.value;
 }
 
 template<class K, class V>
@@ -98,9 +99,9 @@ class Node{
             for(int i=0; i<this->nbElements; i++){
                 newElemTab[i] = this->elem_tab[i];
             }
-            newElemTab[nbElements]=e;
+            newElemTab[nbElements]=e;            
             this->nbElements++;
-            free(this->elem_tab);
+            //free(this->elem_tab);
             this->elem_tab=newElemTab;
             // We return 1 in a success case
             return 1;
@@ -252,27 +253,28 @@ class Index{
         //}
 };
 
-int main(){
-    Index<int, int> i = Index<int, int>(); 
-    Node<int, int> n = Node<int, int>(12); 
-    Element<int, int> e = Element<int, int>(12, 33);
-    Element<int, int> eBis = Element<int, int>(12, 667);
-    Element<int, int> e1 = Element<int, int>(13, 33);
-    Element<int, int> e2 = Element<int, int>(13, 53);
-    Element<int, int> e3 = Element<int, int>(1, 53);
+string test(string s){
+    string tmp;
 
-    Index<int, int> iS= Index<int, int>(); 
-    Element<int, int> eS = Element<int, int>(3, 12);
-    i.addNode(12);
-    i.addNode(13);
+    tmp = s; 
+
+    return tmp;
+
+}
+
+int main(){
+    Index<string, int> i = Index<string, int>(); 
+    Node<string, int> n = Node<string, int>("Yanis");
+    Element<string, int> e = Element<string, int>("Yanis", 33); 
+    Element<string, int> e1 = Element<string, int>("Yanis", 2); 
+    Element<string, int> e2  = Element<string, int>("Yh", 33); 
+    Element<string, int> e3  = Element<string, int>("Alex", 3); 
+    Element<string, int> e4  = Element<string, int>("Alex", 100); 
     i.addElement(e);
-    i.addElement(e1);
+    i.addElement(e1); 
     i.addElement(e2);
     i.addElement(e3);
-    i.addElement(eBis);
+    i.addElement(e4);
     i.printIndex();
-
-    iS.addElement(eS);
-    iS.printIndex();
     return 0; 
 }
