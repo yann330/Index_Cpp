@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <fstream>
 
 using namespace std;
 /************************* Element ********************/
@@ -253,28 +254,125 @@ class Index{
         //}
 };
 
-string test(string s){
-    string tmp;
-
-    tmp = s; 
-
-    return tmp;
-
+int in(char* str){
+    for(int i=0; strlen(str); i++){
+        if(str[i]=='1'){
+            return 1; 
+        }
+        else if(str[i]=='2'){
+            return 2; 
+        }
+        else if(str[i]=='3'){
+            return 2; 
+        }
+    }
+    return -1;
 }
 
-int main(){
-    Index<string, int> i = Index<string, int>(); 
-    Node<string, int> n = Node<string, int>("Yanis");
-    Element<string, int> e = Element<string, int>("Yanis", 33); 
-    Element<string, int> e1 = Element<string, int>("Yanis", 2); 
-    Element<string, int> e2  = Element<string, int>("Yh", 33); 
-    Element<string, int> e3  = Element<string, int>("Alex", 3); 
-    Element<string, int> e4  = Element<string, int>("Alex", 100); 
-    i.addElement(e);
-    i.addElement(e1); 
-    i.addElement(e2);
-    i.addElement(e3);
-    i.addElement(e4);
-    i.printIndex();
+typedef struct{
+    int key; 
+    string value; 
+}config3;
+
+
+int* getInt(string str){
+    string tmp=""; 
+    int* res = (int*) malloc(sizeof(int)*2); 
+    bool trouve = false; 
+    for(int i=0; i< str.length(); i++){
+        if(str.at(i) != ';'){
+            tmp= tmp + str[i];
+        }
+        else if(trouve==false){
+            trouve = true; 
+            res[0] = stoi(tmp); 
+            tmp.clear();
+        }
+        else{
+            tmp= tmp + str[i];
+        }
+    }
+    res[1] = stoi(tmp); 
+    return res;
+}
+
+string getCharStr(string str){
+    string tmp = ""; 
+    // We get the string which is the value
+    for(int i=2; i< str.length(); i++){     
+       tmp=tmp+str[i];
+       
+    }
+    return tmp;
+}
+
+int* getIntStr(string str){
+    string tmp=""; 
+    int* res = (int*) malloc(sizeof(int)*2); 
+    bool trouve = false; 
+    for(int i=0; i< str.length(); i++){
+        if(str.at(i) != ';'){
+            tmp= tmp + str[i];
+        }
+        else if(trouve==false){
+            trouve = true; 
+            res[0] = stoi(tmp); 
+            tmp.clear();
+        }
+        else{
+            tmp= tmp + str[i];
+        }
+    }
+    res[1] = stoi(tmp); 
+    return res;
+}
+
+
+int main(int argc, char* argv[]){
+    // keys type
+    int key; 
+    // valus types
+    int value; 
+     // Open the file 
+     ifstream file; 
+
+     /*cout << "What is the type of your keys:"<<endl<<"(1) int"<<endl<<"(2) char"<<endl<<"(3) string"<<endl; 
+     cin >> key; 
+
+     cout << "What is the type of your valus:"<<endl<<"(1) int"<<endl<<"(2) char"<<endl<<"(3) string"<<endl; 
+     cin >> value;*/
+
+    if(in(argv[1])==1){
+        string myText; 
+        int* res; 
+        // The file name is passed with the execution command
+        file.open(argv[1]); 
+        Index<int, int> i1 = Index<int, int>();
+        while(getline(file, myText)){
+            res = getInt(myText); 
+            Element<int, int> e = Element<int, int>(res[0], res[1]); 
+            i1.addElement(e);
+            free(res);
+        }
+        i1.printIndex();
+    }
+    else if(in(argv[1])==2){
+        string myText; 
+        // The file name is passed with the execution command
+        file.open(argv[1]); 
+        Index<char, string> i2 = Index<char, string>();
+        // get value and key 
+        while(getline(file, myText)){
+            Element<char, string> e = Element<char, string>(myText[0], getCharStr(myText));
+            i2.addElement(e);
+        }
+        
+    }   
+    else if(in(argv[1])==3){
+        // The file name is passed with the execution command
+        file.open(argv[1]); 
+        Index<int, string> i3 = Index<int, string>();
+    }
     return 0; 
+
 }

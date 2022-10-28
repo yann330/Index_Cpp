@@ -1,0 +1,8 @@
+c;Salut
+z;Azul 
+m;Maman
+V;Vava
+V;vélo
+A;Alex
+y;Yanis
+y;Yacine
