@@ -182,7 +182,7 @@ class Index{
             }
             newNodeTab[this->nbElements]=n;
             this->nbElements++;
-            free(this->nodes);
+            //free(this->nodes);
             this->nodes=newNodeTab;
             // We return 1 in a success case
             return 1;
@@ -263,7 +263,7 @@ int in(char* str){
             return 2; 
         }
         else if(str[i]=='3'){
-            return 2; 
+            return 3; 
         }
     }
     return -1;
@@ -274,6 +274,17 @@ typedef struct{
     string value; 
 }config3;
 
+int pvIndice(string str){
+    int res=0; 
+    for(int i=0; i<str.length(); i++){
+        if(str[i] != ';')
+            res++; 
+        else
+            return res; 
+    }
+    // In problem case
+    return -1;
+}
 
 int* getInt(string str){
     string tmp=""; 
@@ -327,6 +338,28 @@ int* getIntStr(string str){
     return res;
 }
 
+int getIntBis(string str){
+    string tmp=""; 
+    int res; 
+    for(int i=0; i< str.length(); i++){
+        if(str.at(i) != ';'){
+            tmp= tmp + str[i];
+        }
+        else{
+            res = stoi(tmp); 
+        }
+    }
+    return res; 
+}
+
+string getStr(string str){
+    string res = ""; 
+    for(int i=pvIndice(str)+1; i< str.length(); i++){
+        res = res + str[i]; 
+    }
+    return res;  
+}
+
 
 int main(int argc, char* argv[]){
     // keys type
@@ -366,12 +399,20 @@ int main(int argc, char* argv[]){
             Element<char, string> e = Element<char, string>(myText[0], getCharStr(myText));
             i2.addElement(e);
         }
+        i2.printIndex();
         
-    }   
+    }
     else if(in(argv[1])==3){
+        string myText; 
         // The file name is passed with the execution command
         file.open(argv[1]); 
         Index<int, string> i3 = Index<int, string>();
+        // get value and key 
+        while(getline(file, myText)){
+            Element<int, string> e = Element<int, string>(getIntBis(myText), getStr(myText));
+            i3.addElement(e);
+        }
+        i3.printIndex();
     }
     return 0; 
 
