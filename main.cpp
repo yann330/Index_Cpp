@@ -105,6 +105,7 @@ class Node{
         int getNbElements();
         void printNode();
         K getKey();
+        void sortElements(); 
 };
 
 /*
@@ -153,6 +154,8 @@ int Node<K,T>::addElement(Element<K, T> e){
     this->nbElements++;
     //free(this->elem_tab);
     this->elem_tab=newElemTab;
+    // We sort the elements 
+    this->sortElements();
     // We return 1 in a success case
     return 1;
 } 
@@ -204,6 +207,18 @@ K Node<K,T>::getKey(){
     return this->key; 
 }
 
+template<class K, class T>
+void Node<K,T>::sortElements(){
+    for (int i = 0; i < nbElements; i++) {     
+        for (int j = i+1; j < nbElements; j++) {     
+           if(elem_tab[i].getValue() > elem_tab[j].getValue()) {    
+               Element<K, T> temp = elem_tab[i];    
+               elem_tab[i] = elem_tab[j];    
+               elem_tab[j] = temp;    
+           }     
+        }     
+    }   
+}
 /*
  ___ _   _ ____  _______  __
 |_ _| \ | |  _ \| ____\ \/ /
@@ -237,6 +252,7 @@ class Index{
         void printIndex();
         // Function used to delete an element from the Inex 
         int deleteElement(Element<K,T> e);
+        void sortNodes();
 };
 
 /*
@@ -298,6 +314,7 @@ int Index<K, T>::addElement(Element<K,T> e){
     // There is no node with a the element's key, we should create it 
     this->addNode(e.getKey()); 
     this->addElement(e);
+    sortNodes();
     return 2;
 }
 
@@ -374,6 +391,19 @@ int Index<K, T>::getNode(K key){
 template<class K, class T>
 Node<K,T> Index<K, T>::getNodeIndex(int i){
     return this->nodes[i]; 
+}
+
+template<class K, class T>
+void Index<K,T>::sortNodes(){
+    for (int i = 0; i < this->nbElements; i++) {     
+        for (int j = i+1; j < this->nbElements; j++) {     
+           if(nodes[i].getKey() > nodes[j].getKey()) {    
+               Node<K, T> temp = nodes[i];    
+               nodes[i] = nodes[j];    
+               nodes[j] = temp;    
+           }     
+        }     
+    }   
 }
 
 /*
